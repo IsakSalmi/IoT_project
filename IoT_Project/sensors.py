@@ -5,13 +5,27 @@ tempOut = ADC(27)
 
 tempIn = ADC(4)
 
-pin = Pin("LED",Pin.OUT)
+sf = 4095/65535 # Scale factor
+volt_per_adc = (3.3 / 4095)
+def MCPConverter(millivolts):
+    adc_12b = millivolts * sf
+
+    volt = adc_12b * volt_per_adc
+
+    # MCP9700 characteristics
+    dx = abs(50 - 0)
+    dy = abs(0 - 0.5)
+
+    shift = volt - 0.5
+
+    temp = shift / (dy / dx)
+    return temp
+
 
 def MCPSensor():
-    adc_value = tempOut.read_u16()
-    volt = (3.3/65535) * adc_value
-    degC = (100 * volt) - 50
-    return degC
+    millivolts = tempOut.read_u16()
+    temp = MCPConverter(millivolts)
+    return temp
 
 def onBoardTemp():
     ADC_voltage = tempIn.read_u16() * (3.3 / (65535))
