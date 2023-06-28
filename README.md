@@ -22,11 +22,9 @@ To be able to check if the window is closed or open, we use a hall effect sensor
 
 In this project we also use a breadboard. Here you don’t need a specific breadboard. You will also be needing a micro-USB cable and jumper cables, both M- to -M and M- to -F.
 
-![drawing](assets/20230628_153059_PICO-WH-HERO.jpg){ width=50% }
-
 
 |                                                                   |         Name         | price (SEK) | Amount |                                              Link                                              |
 | ------------------------------------------------------------------- | :--------------------: | :-----------: | :------: | :----------------------------------------------------------------------------------------------: |
-| [<img src="Assets/20230628_153059_PICO-WH-HERO.jpg" width="200">] | Raspberry Pi Pico WH |     109     |   1   |        [Raspberry Pi Pico WH](https://www.electrokit.com/produkt/raspberry-pi-pico-wh/)        |
-| ![](assets/20230628_154611_MCP9700.jpg)                           |       MCP9700       |    10.75    |   2   |   [MCP9700](https://www.electrokit.com/produkt/mcp9700-e-to-to-92-temperaturgivare/https:/)   |
-| ![](assets/20230628_155035_hall_effect.jpg)                       |  hall effect sensor  |     36     |   1   | [hall effect sensor](https://www.electrokit.com/produkt/pulsgivare-halleffekt-digital/https:/) |
+| <img src="https://github.com/IsakSalmi/IoT_project/blob/b7fdafecf15d1d38401be223f6790c4df1f141c2/assets/20230628_153059_PICO-WH-HERO.jpg" width="200"> | Raspberry Pi Pico WH |     109     |   1   |        [Raspberry Pi Pico WH](https://www.electrokit.com/produkt/raspberry-pi-pico-wh/)        |
+| <img src="https://github.com/IsakSalmi/IoT_project/blob/b7fdafecf15d1d38401be223f6790c4df1f141c2/assets/20230628_154611_MCP9700.jpg" width="200"> |       MCP9700       |    10.75    |   2   |   [MCP9700](https://www.electrokit.com/produkt/mcp9700-e-to-to-92-temperaturgivare/https:/)   |
+| <img src="https://github.com/IsakSalmi/IoT_project/blob/b7fdafecf15d1d38401be223f6790c4df1f141c2/assets/20230628_155035_hall_effect.jpg" width="200">|  hall effect sensor  |     36     |   1   | [hall effect sensor](https://www.electrokit.com/produkt/pulsgivare-halleffekt-digital/https:/) |
