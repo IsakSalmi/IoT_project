@@ -1,0 +1,12 @@
+
+SSID = ''
+PSSWORD = ''
+
+AIO_SERVER = "io.adafruit.com"
+AIO_PORT = 1883
+AIO_USER = ""
+AIO_KEY = ""
+OUTDOOR_TEMP = ""
+INDOOR_TEMP = ""
+WINDOW_SENSOR = ""
+WINDOW_STATUS = ""
