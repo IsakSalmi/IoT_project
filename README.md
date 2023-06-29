@@ -20,11 +20,51 @@ The sensor to measure the temperature is a MCP9700 which can measure temperature
 
 To be able to check if the window is closed or open, we use a hall effect sensor and a magnet. The hall effect sensor is both a digital and an analog signal. This sensor will give a signal depending on how strong the magnetic field is near the sensor. For mor info and a user guide, lock at this [guide](https://www.electrokit.com/uploads/productfile/41015/41015710_-_Hall_Effect_Sensor.pdf). The Magnet used in this project is a [Magnet Neo 35 Ø5mm x 5mm](https://www.electrokit.com/uploads/productfile/41011/41011480.pdf).
 
-In this project we also use a breadboard. Here you don’t need a specific breadboard. You will also be needing a micro-USB cable and jumper cables, both M- to -M and M- to -F.
+In this project we also use a breadboard. Here you don’t need a specific breadboard. You will also be needing a micro-USB cable and jumper cables, both M- to -M and M- to -F. On the amount column in the table below is the minimum amount of jumper cables needed to do this project. The amount of M-to-F jumper cables depends on how long the cable for the outdoor temperature sensor needs to be and also how long the cable of the hall effect sesnor needs to be. In the
 
 
-|                                                                   |         Name         | price (SEK) | Amount |                                              Link                                              |
-| ------------------------------------------------------------------- | :--------------------: | :-----------: | :------: | :----------------------------------------------------------------------------------------------: |
-| <img src="assets/PICO-WH-HERO.jpg" width="200"> | Raspberry Pi Pico WH |     109     |   1   |        [Raspberry Pi Pico WH](https://www.electrokit.com/produkt/raspberry-pi-pico-wh/)        |
-| <img src="assets/MCP9700.jpg" width="200"> |       MCP9700       |    10.75    |   2   |   [MCP9700](https://www.electrokit.com/produkt/mcp9700-e-to-to-92-temperaturgivare/https:/)   |
-| <img src="assets/hall_effect.jpg" width="200">|  hall effect sensor  |     36     |   1   | [hall effect sensor](https://www.electrokit.com/produkt/pulsgivare-halleffekt-digital/https:/) |
+|                                                  |         Name         | price (SEK) | Amount |                                                Link                                                |
+| -------------------------------------------------- | :---------------------: | :-----------: | :------: | :--------------------------------------------------------------------------------------------------: |
+| <img src="assets/PICO-WH-HERO.jpg" width="200">  | Raspberry Pi Pico WH |     109     |   1   |          [Raspberry Pi Pico WH](https://www.electrokit.com/produkt/raspberry-pi-pico-wh/)          |
+| <img src="assets/MCP9700.jpg" width="200">       |        MCP9700        |    10.75    |   2   |     [MCP9700](https://www.electrokit.com/produkt/mcp9700-e-to-to-92-temperaturgivare/https:/)     |
+| <img src="assets/hall_effect.jpg" width="200">   |  hall effect sensor  |     36     |   1   |   [hall effect sensor](https://www.electrokit.com/produkt/pulsgivare-halleffekt-digital/https:/)   |
+| <img src="assets/kopplingsdack.jpg" width="200"> |      BreadBoard      |     69     |   1   |      [BreadBoard](https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/https:/)      |
+| <img src="assets/USB-kable.jpg" width="200">     | USB-kable A to mico B |     39     |   1   | [USB-kable A to mico B](https://www.electrokit.com/produkt/usb-kabel-a-hane-micro-b-5p-hane-1-8m/) |
+| <img src="assets/M-to-M.jpg" width="200">        | Jumper cables M-to-M |     29     |   16   |    [Jumper cables M-to-M](https://www.electrokit.com/produkt/labbsladd-20-pin-15cm-hane-hane/)    |
+| <img src="assets/M-to-F.jpg" width="200">        | Jumper cables M-to-F |     29     |   6   |    [Jumper cables M-to-F](https://www.electrokit.com/produkt/labbsladd-20-pin-15cm-hona-hane/)    |
+
+## Computer setup
+
+In this project we used [Visual Studio Code](https://code.visualstudio.com/https:/) and with VS code we used the [Pico-W-Go](https://marketplace.visualstudio.com/items?itemName=paulober.pico-w-gohttps:/) extension to upload the code on to our raspberry Pi Pico WH. The steps below are for windows OS, If you are using another OS there might be some other steps.
+
+**To setup the project you need to follow this step by step:**
+
+1. This project uses micropython so first you need to install [python](https://www.python.org/downloads/).
+2. Download and install the IDE, we use the IDE [VS code
+3. Get the [Pico-W-Go](https://marketplace.visualstudio.com/items?itemName=paulober.pico-w-gohttps:/) extension in VS code. To install a extention follow this [guide](https://code.visualstudio.com/docs/editor/extension-marketplace). The guide is for another extention but works the same whay for Pico-W-Go
+
+now that we have setup the coding environment, we need to install the firmware to be able to run micropython on the pico WH. To setup and update the firmware fore the Raspberry Pi Pico WH you need to follow these steps in order:
+
+1. First we need to download the [MicroPython firmware](https://micropython.org/download/rp2-pico-w/). When you download the firmware, you will get a u2f file witch we need later. To make sure you get a stable build I would recommend to get the Releases and not the Nightly build.
+2. Connect the micro-USB to the pico WH and **not** to the computer.
+3. Now you need to push in the **bootsel** button.After you have push in the button you can plug in the other end of the USB into your computer. After you have plug the USB in to the computer you can release the bootsel button. You can finde the bootsel button here:
+
+   <img src="assets/Pico-bootsel.png" width="400">
+4. If the steps above was done correctly you should get a new driver in you file system called **RPI-RP2** witch is the raspberry pi pico WH. Now you take the **uf2** file from earlier and drag it in to this storage.
+5. After you dragged the uf2 file in to the RRI-RP2 you wait till the Pico automatically disconnect and reconnect.
+
+Now you have successfully installed microPython on yourNow you have Raspberry Pi Pico WH. The last thing is to upload the code to the Raspberry Pi Pico WH:
+
+1. First you need to clone this repository to your computer. You do this by first installing [Git](https://git-scm.com/downloads) on your computer. When you have install Git you can test to se if you have done everything successfully by typing `git --version` in your terminal. If you get a version of git you have done everything right.
+2. Now you need to clone this repository to your computer. First go to a place in your file system where you want the project to be. Copy the path and open a terminal. Type `cd your_path` and press enter. Now you are in the directory you want the project to be.
+3. Now its time to clone the project. Just type this in your `git clone https://github.com/IsakSalmi/IoT_project.git`. If done correctly you should have the project on that path.
+4. Now you just connect your Pico to a USB open the project folder in VS code. You can see if you are connected to the Pico on the tollbar on the bottom. <img src="assets/tool-bar.png" width="400">
+
+   After that press `CTR+shift+p` and search for Pico-W-Go: Upload project to Pico and press enter.
+
+## Putting circut together
+
+To create the circuit, follow this illustration to connect the two MCP9700 and the hall effect sensor. Be careful when connecting the MCP9700 so you have the right side. In the illustration the flat side is toward you. The length of the cables is not accurate to the real project because the cable length is different depending on your windows and placement of the breadboard.
+<p align="center">
+   <img src="assets/Circuit.png" width="800">
+</p>
