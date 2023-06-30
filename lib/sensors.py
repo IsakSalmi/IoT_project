@@ -49,7 +49,7 @@ def MCPSensor():
 
 digitalPin = Pin(26, Pin.IN)
 def WinSensor():
-    """Get the bool from a Pulse sensor hall effect digital
+    """Get the bool from a hall effect digital
 
     Returns:
         bool: if the sensor have been triggerd

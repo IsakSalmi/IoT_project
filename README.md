@@ -10,7 +10,7 @@ This is a project to measure temperature both indoor and outdoor and check a hal
 
 This project was constructed to help monitor and be able to lower the temperature in a room without needing a AC. So, this project main purpose is to be able to naturally help to cool down a room by checking if the air outside is cooler then the air indoors.
 
-This is not the only thing that this project can help with. One good insight this project will give is if you have a good air circulation in the room by locking at the indoor and outdoor temp and comparing then when you have the window open and closed.
+This is not the only thing that this project can help with. One good insight this project will give is if you have a good air circulation in the room by locking at the indoor and outdoor temp and comparing them when you have the window open and closed.
 
 ## Material
 
@@ -72,13 +72,32 @@ To create the circuit, follow this illustration to connect the two MCP9700 and t
 
 ## Platform
 
-The platform used in this project is [Adafruit](https://www.adafruit.com/) which is a free and easy to use broker. The platform is used to receive and display all the data we get from the temperature sensor and hall effect sensor so we can display it in a more user-friendly way. We will go through how to set up adafruit later in this document.
+The platform used in this project is [Adafruit](https://www.adafruit.com/) which is a free and easy to use broker. The platform is used to receive and display all the data we get from the temperature sensor and hall effect sensor so we can display it in a more user-friendly way.
+
+To set up adafruit you need to create four feeds. To create a feed you can use this [tutorial](https://learn.adafruit.com/adafruit-io-basics-feeds/creating-a-feed). Name one IndoorTempSensor, one OutdoorTempSensor, one windowDoorSensor and the last one WindowStatus. The IndoorTempSensor and OutdoorTempSensor is fore storeing the temperature data. windowDoorSensor is for store if the window needs to open or close. The WindowStatus is fore storing the current status of the window.
+
+To connect these feeds to your project you need to open the `config.py` file in the lib folder and fill in the corresponding variables.
+
+`AIO_USER` = your username on adafruit
+
+`AIO_KEY` = is a key you can find beside new device
+
+<img src="assets/API_key.png" width="200">
+
+`OUTDOOR_TEMP` = is the path for the outdoor temp feed where you can find by clicking on the
+feed and look on Feed Info and copy the MQTT path
+
+`INDOOR_TEMP` = the same as above but for the indoor feed
+
+`WINDOW_SENSOR` = the same as above but fore the window door sensor feed
+
+`WINDOW_STATUS` = the same as above but for the window status.
 
 ## code
 
-The code consists of a main.py file and a lib map. In the lib map we have a config.py, mqtt.py, sensor.py and wifi.py.
+The code consists of a `main.py` file and a lib map. In the lib map we have a `config.py`, `mqtt.py`, `sensor.py` and `wifi.py`.
 
-In the **main.py** we have the code for both connecting to the WIFI and connecting with adafruit by using a MQTT connection.
+In the `main.py` we have the code for both connecting to the WIFI and connecting with adafruit by using a MQTT connection.
 
 ```python
 #connecting to the internet
@@ -91,6 +110,112 @@ client = MQTTClient(AIO_CLIENT_ID, config.AIO_SERVER, config.AIO_PORT, config.AI
 client.connect()
 ```
 
-We also have the main loop in **main.py**. this loop will read from all the sensors and send the right info to the adafruit by using the different send functions in main.py. We can se that we have two if statement in the main loop. This statement is to send the necessary data to know if you should open or close the window. This info can only be sent once every time the window changes from close to open or vice versa.
+We also have the main loop in `main.py`. this loop will read from all the sensors and send the right info to the adafruit by using the different send functions in main.py. We can se that we have two if statement in the main loop. This statement is to send the necessary data to know if you should open or close the window. This info can only be sent once every time the window changes from close to open or vice versa.
 
-https://github.com/IsakSalmi/IoT_project/blob/d170e4c3bcc214db70cd7ee968670a48960f8546/main.py
+```python
+def main():
+    can_send_massage = True
+    last_window_comand = False
+  
+    while True:
+        # get all the needed variables from the sensors
+        temp = sensors.MCPSensor()
+        window = sensors.WinSensor()
+  
+        #send the window status to adafruit
+        send_window_status(window)
+
+        #if we have a change from the window sensor we can now 
+        #send a new message
+        if(last_window_comand != window):
+            can_send_massage = True
+
+        print("temp in: {}, temp out: {}".format(temp[0],temp[1]))
+        print("window: {}, can_send_massage: {}\n".format(window, can_send_massage))
+  
+        #if we have a closed window, indoor temp is higer 
+        #then outdoor temp and we can send a messages to adafruit to be able to 
+        #call the action in adafruit
+        if(((temp[0] - 1) > temp[1]) and (window == True) and (can_send_massage == True)):
+            send_window_command(1)
+            can_send_massage = False
+  
+        #the same as above but in reverse order. 
+        elif(((temp[1] - 1) > temp[0]) and (window == False) and (can_send_massage == True)):
+            send_window_command(0)
+            can_send_massage = False
+  
+        #send both temp to the adafruit server 
+        send_temp(temp[0],temp[1])
+
+        last_window_comand = window
+        sleep(10)
+```
+
+The `sensor.py` contains two functions. One fore the two temperature sensors and one for the hall effect sensor. These functions are fore retrieving the data from the different sensors.
+
+```python
+sf = 4095/65535 # Scale factor
+volt_per_adc = (3.3 / 4095)
+
+def MCPConverter(millivolts):
+    """To convert the value from a MCP9700 sensor
+
+    Args:
+        millivolts (float): the given value that the MCP9700 sensor give
+
+    Returns:
+        float: the actual temp in celsius
+    """
+    adc_12b = millivolts * sf
+
+    volt = adc_12b * volt_per_adc
+
+    # MCP9700 characteristics
+    dx = abs(50 - 0)
+    dy = abs(0 - 0.5)
+
+    shift = volt - 0.5
+
+    temp = shift / (dy / dx)
+    return temp
+
+temp_out = ADC(28)
+temp_in = ADC(27)
+def MCPSensor():
+    """Get two temperaturs from a pico w on the pin 28 and 27
+
+    Returns:
+        float:the two temperatures 
+    """
+    list_in = []
+    list_out = []
+    for i in range(11):
+        millivolts_out = temp_out.read_u16()
+        millivolts_in = temp_in.read_u16()
+        list_in.append(MCPConverter(millivolts_in))
+        list_out.append(MCPConverter(millivolts_out))
+    list_in.sort()
+    list_out.sort()
+    return list_in[5],list_out[5]
+
+
+digitalPin = Pin(26, Pin.IN)
+def WinSensor():
+    """Get the bool from a hall effect digital
+
+    Returns:
+        bool: if the sensor have been triggerd
+    """
+    digitalValue = digitalPin.value()
+    if digitalValue == True:
+        return True
+    else:
+        return False
+```
+
+`Wifi.py` is the code fore connecting to the WIFI. This code consists of two function one for connection to you WIFI and the other is to request a http to check if the internet connection works.
+
+The `mqtt.py` is needed to transport the data with MQTT and is taken from this [link](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
+
+## Transmitting the data
