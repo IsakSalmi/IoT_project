@@ -1,7 +1,7 @@
 import network
 import socket
 import time
-import IoT_Project.config as config
+import lib.config as config
 
 def connect():
     """connect to the wifi

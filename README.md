@@ -65,6 +65,70 @@ Now you have successfully installed microPython on yourNow you have Raspberry Pi
 ## Putting circut together
 
 To create the circuit, follow this illustration to connect the two MCP9700 and the hall effect sensor. Be careful when connecting the MCP9700 so you have the right side. In the illustration the flat side is toward you. The length of the cables is not accurate to the real project because the cable length is different depending on your windows and placement of the breadboard.
+
 <p align="center">
    <img src="assets/Circuit.png" width="800">
 </p>
+
+## Platform
+
+The platform used in this project is [Adafruit](https://www.adafruit.com/) which is a free and easy to use broker. The platform is used to receive and display all the data we get from the temperature sensor and hall effect sensor so we can display it in a more user-friendly way. We will go through how to set up adafruit later in this document.
+
+## code
+
+The code consists of a main.py file and a lib map. In the lib map we have a config.py, mqtt.py, sensor.py and wifi.py.
+
+In the **main.py** we have the code for both connecting to the WIFI and connecting with adafruit by using a MQTT connection.
+
+```python
+#connecting to the internet
+wifi.connect()
+wifi.getHttpTest()
+
+#conecting to adafruit
+AIO_CLIENT_ID = ubinascii.hexlify(machine.unique_id())
+client = MQTTClient(AIO_CLIENT_ID, config.AIO_SERVER, config.AIO_PORT, config.AIO_USER, config.AIO_KEY)
+client.connect()
+```
+
+We also have the main loop in **main.py**. this loop will read from all the sensors and send the right info to the adafruit by using the different send functions in main.py. We can se that we have two if statement in the main loop. This statement is to send the necessary data to know if you should open or close the window. This info can only be sent once every time the window changes from close to open or vice versa.
+
+```python
+def main():
+    can_send_massage = True
+    last_window_comand = False
+  
+    while True:
+        # get all the needed variables from the sensors
+        temp = sensors.MCPSensor()
+        window = sensors.WinSensor()
+      
+        #send the window status to adafruit
+        send_window_status(window)
+
+        #if we have a change from the window sensor we can now 
+        #send a new message
+        if(last_window_comand != window):
+            can_send_massage = True
+
+        print("temp in: {}, temp out: {}".format(temp[0],temp[1]))
+        print("window: {}, can_send_massage: {}\n".format(window, can_send_massage))
+      
+        #if we have a closed window, indoor temp is higer 
+        #then outdoor temp and we can send a messages to adafruit to be able to 
+        #call the action in adafruit
+        if(((temp[0] - 1) > temp[1]) and (window == True) and (can_send_massage == True)):
+            send_window_command(1)
+            can_send_massage = False
+          
+        #the same as above but in reverse order. 
+        elif(((temp[1] - 1) > temp[0]) and (window == False) and (can_send_massage == True)):
+            send_window_command(0)
+            can_send_massage = False
+      
+        #send both temp to the adafruit server 
+        send_temp(temp[0],temp[1])
+
+        last_window_comand = window
+        sleep(10)
+```

@@ -1,11 +1,10 @@
 
-import IoT_Project.sensors as sensors
-import IoT_Project.wifi as wifi
-from IoT_Project.mqtt import MQTTClient
-import IoT_Project.config as config
+import lib.sensors as sensors
+import lib.wifi as wifi
+from lib.mqtt import MQTTClient
+import lib.config as config
 
 from time import sleep
-from time import ticks_ms
 import machine
 import ubinascii 
 
