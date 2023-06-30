@@ -1,6 +1,6 @@
 
 SSID = ''
-PSSWORD = ''
+PASSWORD = ''
 
 AIO_SERVER = "io.adafruit.com"
 AIO_PORT = 1883

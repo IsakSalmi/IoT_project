@@ -10,7 +10,7 @@ def connect():
     if not sta_if.isconnected():
         print("connecting to network...")
         sta_if.active(True)
-        sta_if.connect(config.SSID, config.PSSWORD)
+        sta_if.connect(config.SSID, config.PASSWORD)
         while not sta_if.isconnected():
             pass
     print("network config: ", sta_if.ifconfig())

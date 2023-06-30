@@ -4,7 +4,7 @@ ID: is223ea
 
 # Climate Controler with MCP9700 and hall effect sensor
 
-This is a project to measure temperature both indoor and outdoor and check a hall effect sensor if it’s needed to open or close a window depending on the temperature and the status of the window. This is not a hard project to set up  and will take around 3 hours to set up fooling this tutorial.
+This is a project to measure temperature both indoor and outdoor and check a hall effect sensor if it’s needed to open or close a window depending on the temperature and the status of the window. This is not a hard project to set up  and will take around 3 hours to set up by following this tutorial.
 
 ## Objective
 
@@ -20,7 +20,7 @@ The sensor to measure the temperature is a MCP9700 which can measure temperature
 
 To be able to check if the window is closed or open, we use a hall effect sensor and a magnet. The hall effect sensor is both a digital and an analog signal. This sensor will give a signal depending on how strong the magnetic field is near the sensor. For mor info and a user guide, lock at this [guide](https://www.electrokit.com/uploads/productfile/41015/41015710_-_Hall_Effect_Sensor.pdf). The Magnet used in this project is a [Magnet Neo 35 Ø5mm x 5mm](https://www.electrokit.com/uploads/productfile/41011/41011480.pdf).
 
-In this project we also use a breadboard. Here you don’t need a specific breadboard. You will also be needing a micro-USB cable and jumper cables, both M- to -M and M- to -F. On the amount column in the table below is the minimum amount of jumper cables needed to do this project. The amount of M-to-F jumper cables depends on how long the cable for the outdoor temperature sensor needs to be and also how long the cable of the hall effect sesnor needs to be. In the
+In this project we also use a breadboard. Here you don’t need a specific breadboard. You will also be needing a micro-USB cable and jumper cables, both M- to -M and M- to -F. On the amount column in the table below is the minimum amount of jumper cables needed to do this project. The amount of M-to-F jumper cables depends on how long the cable for the outdoor temperature sensor needs to be and also how long the cable of the hall effect sesnor needs to be.
 
 
 |                                                  |         Name         | price (SEK) | Amount |                                                Link                                                |
@@ -92,6 +92,8 @@ feed and look on Feed Info and copy the MQTT path
 `WINDOW_SENSOR` = the same as above but fore the window door sensor feed
 
 `WINDOW_STATUS` = the same as above but for the window status.
+
+We also need to connect to WiFi. To be able to connect to WiFi you need to fill in two more variable in `config.py`. you need to fill in the `SSID` variable witch is the name of your router and then the `PASSWORD`for the router. Here it is important that the router is on 2.4 GHz and not on 5.0GHz because the onboard chip only works on 2.4 GHz.
 
 ## code
 
@@ -219,3 +221,32 @@ def WinSensor():
 The `mqtt.py` is needed to transport the data with MQTT and is taken from this [link](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
 
 ## Transmitting the data
+
+The data of this project is sent out every 10 seconds and uses the WiFi protocol and uses the MQTT protocol to transport the data. We use the WiFi protocol because this project is made to help control the indoor climate in a rom and because of that we don’t need a long-range communication and WiFi is also easy to come by in a house
+or apartment.
+
+## Presenting the data
+
+The data that is stored in the feeds will be stored therefore 30 days according to adafruits [data policies](https://learn.adafruit.com/adafruit-io/data-policies). Fore presenting the data we used a [dashboard](https://learn.adafruit.com/adafruit-io-basics-dashboards/creating-a-dashboard) in adafruit and connected one graph to the outdoor feed and the indoor feed. We also connected one gauge to each feed to display the current temperature. It looks like this:
+
+<img src="assets/temp_display.png" width="600">
+
+To display the status of the window and if the window should be open or closed, I used indicator
+to show the status of the window. The Display looks like this:
+
+<img src="assets/window_state.png" width="600">
+
+So in total the dashboard looks like this:
+
+<img src="assets/total_display.png" width="600">
+
+## Finalizing the design
+
+This project was a beginner project to solve a simple problem by using IoT based knowledge and I think the project turn out well and useful. To get a better result the project should probably used a temperature sensor with a lower margin of error but when testing the MCP9700 they often have the same output as each other and that was the most important thing in this project. One thing that also would be a better solution is to use two Raspberry Pi Pico WH, one for the indoor temperature and one fore the outdoor and hall effect sensor. If I did this, I could have placed the indoor sensor in a better location without having long jumper wire going all over the place. But in the end, I ended up with a working project that helped me fix a problem.
+
+Pictures of the circuit in action:
+
+<img src="assets/live_circut.jpg" width="600">
+
+<img src="assets/live_hall_effect.jpg" width="300">
+<img src="assets/live_outdoor_tem.jpg" width="300">
