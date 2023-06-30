@@ -93,42 +93,4 @@ client.connect()
 
 We also have the main loop in **main.py**. this loop will read from all the sensors and send the right info to the adafruit by using the different send functions in main.py. We can se that we have two if statement in the main loop. This statement is to send the necessary data to know if you should open or close the window. This info can only be sent once every time the window changes from close to open or vice versa.
 
-```python
-def main():
-    can_send_massage = True
-    last_window_comand = False
-    
-    while True:
-        # get all the needed variables from the sensors
-        temp = sensors.MCPSensor()
-        window = sensors.WinSensor()
-        
-        #send the window status to adafruit
-        send_window_status(window)
-
-        #if we have a change from the window sensor we can now 
-        #send a new message
-        if(last_window_comand != window):
-            can_send_massage = True
-
-        print("temp in: {}, temp out: {}".format(temp[0],temp[1]))
-        print("window: {}, can_send_massage: {}\n".format(window, can_send_massage))
-        
-        #if we have a closed window, indoor temp is higer 
-        #then outdoor temp and we can send a messages to adafruit to be able to 
-        #call the action in adafruit
-        if(((temp[0] - 1) > temp[1]) and (window == True) and (can_send_massage == True)):
-            send_window_command(1)
-            can_send_massage = False
-            
-        #the same as above but in reverse order. 
-        elif(((temp[1] - 1) > temp[0]) and (window == False) and (can_send_massage == True)):
-            send_window_command(0)
-            can_send_massage = False
-        
-        #send both temp to the adafruit server 
-        send_temp(temp[0],temp[1])
-
-        last_window_comand = window
-        sleep(10)
-```
+https://github.com/IsakSalmi/IoT_project/blob/d170e4c3bcc214db70cd7ee968670a48960f8546/main.py
